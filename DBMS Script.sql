@@ -56,7 +56,7 @@ CREATE TABLE [dbo].[Mobile](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[OS] [int] NOT NULL,
 	[Color] [int] NOT NULL,
-	[Category] [int] NOT NULL,
+	[Category] [nvarchar](50) NOT NULL,
 	[Dimensions] [float] NOT NULL,
 	[Weight] [float] NOT NULL,
 	[Display] [float] NOT NULL,
