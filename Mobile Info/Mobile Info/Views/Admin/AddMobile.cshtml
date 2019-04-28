@@ -7,71 +7,76 @@
 @using Mobile_Info.Models
 @model MobileViewModel
 
-<form method="post">
+@using (Html.BeginForm("AddMobile", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+
     <fieldset>
         <legend>Add Mobile</legend>
         <div>
-            @{ 
-                List<String> list = new List<string>();
-                list.Add("Samsung");
-                list.Add("OPPO");
-            }
+            <label for="Title">Title:</label>
+            @Html.TextBox("Title", null, new { @class = "form-control", required = "required" })
+        </div>
+        <div>
             <label for="Category">Category:</label>
             @Html.DropDownListFor(m => m.Category,
-                         new SelectList(list),"Select Category",
-                    new { @class = "form-control" })
+                         new SelectList(ViewBag.categories),"Select Category",
+                    new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="OS">Operating System:</label>
-            @Html.DropDownList("Color",
-                    new SelectList(new[] {new { ID = "1", Name = "Andriod" }, new { ID = "2", Name = "IOS" }, }, "ID", "Name", 1),
-                    new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.OS,
+                         new SelectList(ViewBag.OS), "Select OS",
+                    new { @class = "form-control" ,required = "required" })
         </div>
         <div>
             <label for="Color">Color:</label>
-            @Html.DropDownListFor(m=>m.Color,
-                    new SelectList(new[] { new { ID = "1", Name = "Black" }, new { ID = "2", Name = "White" }, new { ID = "3", Name = "Silver" }, }, "ID","Name", 1),
-                    new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.Color,
+                         new SelectList(ViewBag.Colors), "Select Color",
+                    new { @class = "form-control", required = "required" })
+        </div>
+        <div>
+            <label for="Price">Price:</label>
+            @Html.TextBox("Price", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="Dimensions">Dimensions:</label>
-            @Html.TextBox("Dimensions", null, new { @class = "form-control" })
+            @Html.TextBox("Dimensions", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="Weight">Weight:</label>
-            @Html.TextBox("Weight", null, new { @class = "form-control" })
+            @Html.TextBox("Weight", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="Display">Display:</label>
-            @Html.TextBox("Display", null, new { @class = "form-control" })
+            @Html.TextBox("Display", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="Memory">Memory:</label>
-            @Html.TextBox("Memory", null, new { @class = "form-control" })
+            @Html.TextBox("Memory", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="RAM">RAM:</label>
-            @Html.TextBox("RAM", null, new { @class = "form-control" })
+            @Html.TextBox("RAM", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="FrontCameraPx">Front Camera:</label>
-            @Html.TextBox("FrontCameraPx", null, new { @class = "form-control" })
+            @Html.TextBox("FrontCameraPx", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="BackCameraPx">Back Camera:</label>
-            @Html.TextBox("BackCameraPx", null, new { @class = "form-control" })
+            @Html.TextBox("BackCameraPx", null, new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label for="networks:">Networks:</label>
             @Html.DropDownList("Networks",
                     new SelectList(new[] { new { ID = "1", Name = "3G" }, new { ID = "2", Name = "4G" } }, "ID", "Name", 1),
-                    new { @class = "form-control" })
+                    new { @class = "form-control", required = "required" })
         </div>
         <div>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
-</form>
-<h2>@ViewBag.Name</h2>
+                }
 

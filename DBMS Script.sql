@@ -56,7 +56,7 @@ CREATE TABLE [dbo].[Mobile](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[OS] [int] NOT NULL,
 	[Color] [int] NOT NULL,
-	[Category] [nvarchar](50) NOT NULL,
+	[Category] [int] NOT NULL,
 	[Dimensions] [float] NOT NULL,
 	[Weight] [float] NOT NULL,
 	[Display] [float] NOT NULL,
@@ -65,6 +65,8 @@ CREATE TABLE [dbo].[Mobile](
 	[FrontCamerPx] [int] NOT NULL,
 	[BackCamerPx] [int] NOT NULL,
 	[Networks] [int] NOT NULL,
+	[Price] [int] NOT NULL,
+	[Title] [varchar](50) NOT NULL,
  CONSTRAINT [PK_Mobile] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -74,15 +76,21 @@ GO
 
 CREATE TABLE [dbo].[Administrator](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [varchar] NOT NULL,
-	[Email] [varchar] NOT NULL,
-	[Password] [varchar] NOT NULL,
+	[Name] [varchar](50) NOT NULL,
+	[Email] [varchar](50) NOT NULL,
+	[Password] [varchar](50) NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	CONSTRAINT AdminOnlyOne
+    CHECK (Id = 1),
  CONSTRAINT [PK_Administrator] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+SET IDENTITY_INSERT [dbo].[Administrator] ON
+INSERT [dbo].[Administrator] ([Id], [Name], [Email], [Password], [IsActive]) VALUES (1, N'Admin', N'admin@mobileInfo.com', N'1234567',0)
+SET IDENTITY_INSERT [dbo].[Administrator] OFF
 
 /****** Object:  Table [dbo].[Evaluation]    Script Date: 03/06/2019 00:49:31 ******/
 SET ANSI_NULLS ON

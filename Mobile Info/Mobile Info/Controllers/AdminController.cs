@@ -14,10 +14,37 @@ namespace Mobile_Info.Controllers
         // GET: Admin
         public ActionResult AddMobile()
         {
-            List<String> list = new List<string>();
-            list.Add("Samsung");
-            list.Add("OPPO");
-            ViewBag.listt = list;
+            SqlConnection connection = new SqlConnection(ConStr);
+            connection.Open();
+            String query = "SELECT * FROM Category";
+            SqlCommand cmd = new SqlCommand(query, connection);
+            SqlDataReader rdr = cmd.ExecuteReader();
+            List<String> categories = new List<string>();
+            while (rdr.Read())
+            {
+                categories.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.Categories = categories;
+            rdr.Close();
+            query = "SELECT * FROM Lookup WHERE Category = 'Color'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            List<String> colors = new List<string>();
+            while (rdr.Read())
+            {
+                colors.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.Colors = colors;
+            rdr.Close();
+            query = "SELECT * FROM Lookup WHERE Category = 'OS'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            List<String> os = new List<string>();
+            while (rdr.Read())
+            {
+                os.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.OS = os;
             return View();
         }
         [HttpPost]
@@ -26,11 +53,14 @@ namespace Mobile_Info.Controllers
             SqlConnection connection = new SqlConnection(ConStr);
             connection.Open();
             String OS = mobile.OS;
+            String title = mobile.Title;
             String Cat = mobile.Category;
-            float Weight = mobile.Weight;
-            float Dim = mobile.Dimensions;
-            float dis = mobile.Display;
-            int mem = mobile.Memeory;
+            String Col = mobile.Color;
+            double Weight = mobile.Weight;
+            double Dim = mobile.Dimensions;
+            double dis = mobile.Display;
+            int mem = mobile.Memory;
+            int price = mobile.Price;
             int ram = mobile.RAM;
             int front = mobile.FrontCameraPx;
             int back = mobile.BackCameraPx;
@@ -43,18 +73,83 @@ namespace Mobile_Info.Controllers
             {
                 Network = 4;
             }
-            String query = "INSERT INTO Mobile(OS, Color, Category, Dimensions, Weight, Display, Memory, RAM, FrontCamerPx, BackCamerPx, Networks) VALUES(1, 4, 1, '" + Dim + "', '" + Weight + "', '" + dis + "', '" + mem + "', '" + ram + "', '" + front + "', '" + back + "', '" + Network + "')";
+            String query = "SELECT * FROM LookUp WHERE Value = '" + OS + "'";
             SqlCommand cmd = new SqlCommand(query, connection);
+            SqlDataReader rdr = cmd.ExecuteReader();
+            int operatingSystem = 0;
+            while (rdr.Read())
+            {
+                operatingSystem = Convert.ToInt32(rdr.GetValue(0));
+            }
+            rdr.Close();
+            query = "SELECT * FROM Category WHERE Title = '" + Cat + "'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            int category = 0;
+            while (rdr.Read())
+            {
+                category = Convert.ToInt32(rdr.GetValue(0));
+            }
+            rdr.Close();
+            query = "SELECT * FROM LookUp WHERE Value = '" + Col + "'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            int color = 0;
+            while (rdr.Read())
+            {
+                color = Convert.ToInt32(rdr.GetValue(0));
+            }
+            rdr.Close();
+            query = "INSERT INTO Mobile(OS, Color, Category, Dimensions, Weight, Display, Memory, RAM, FrontCamerPx, BackCamerPx, Networks, Price, Title) VALUES('" + operatingSystem + "', '" + color + "', '" + category + "', '" + Dim + "', '" + Weight + "', '" + dis + "', '" + mem + "', '" + ram + "', '" + front + "', '" + back + "', '" + Network + "', '" + price + "','" + title + "')";
+            cmd = new SqlCommand(query, connection);
             cmd.ExecuteNonQuery();
-            ViewBag.Name = mobile.Category;
+            query = "SELECT * FROM Category";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            List<String> categories = new List<string>();
+            while (rdr.Read())
+            {
+                categories.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.Categories = categories;
+            rdr.Close();
+            query = "SELECT * FROM Lookup WHERE Category = 'Color'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            List<String> colors = new List<string>();
+            while (rdr.Read())
+            {
+                colors.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.Colors = colors;
+            rdr.Close();
+            query = "SELECT * FROM Lookup WHERE Category = 'OS'";
+            cmd = new SqlCommand(query, connection);
+            rdr = cmd.ExecuteReader();
+            List<String> os = new List<string>();
+            while (rdr.Read())
+            {
+                os.Add(rdr.GetValue(1).ToString());
+            }
+            ViewBag.OS = os;
             return View();
         }
         public ActionResult AddCategory()
         {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddCategory(CategoryViewModel category)
+        {
+            SqlConnection connection = new SqlConnection(ConStr);
+            connection.Open();
             List<String> list = new List<string>();
             list.Add("Samsung");
             list.Add("OPPO");
             ViewBag.listt = list;
+            String query = "INSERT INTO Category(Title) VALUES('" + category.Title + "')";
+            SqlCommand cmd = new SqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
             return View();
         }
     }
