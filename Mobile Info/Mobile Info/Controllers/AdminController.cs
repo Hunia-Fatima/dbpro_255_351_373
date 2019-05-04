@@ -5,12 +5,17 @@ using System.Web;
 using System.Web.Mvc;
 using Mobile_Info.Models;
 using System.Data.SqlClient;
+using System.IO;
+using System.Text;
+using System.Data;
+using System.Configuration;
+
 
 namespace Mobile_Info.Controllers
 {
     public class AdminController : Controller
     {
-        String ConStr = "Data Source=HN;Initial Catalog=DB20;Integrated Security=True";
+        String ConStr = "Data Source=DESKTOP-H2EOT5V\\SQLEXPRESS;Initial Catalog=DB20;Integrated Security=True";
         // GET: Admin
         public ActionResult AddMobile()
         {
@@ -131,7 +136,68 @@ namespace Mobile_Info.Controllers
             {
                 os.Add(rdr.GetValue(1).ToString());
             }
+            rdr.Close();
             ViewBag.OS = os;
+
+            
+            //Image Code
+            if (mobile.ImageFileS != null && mobile.ImageFileF != null && mobile.ImageFileB != null)
+            {
+                string pic1 = System.IO.Path.GetFileName(mobile.ImageFileS.FileName);
+                string pic2 = System.IO.Path.GetFileName(mobile.ImageFileF.FileName);
+                string pic3 = System.IO.Path.GetFileName(mobile.ImageFileB.FileName);
+
+                string path1 = System.IO.Path.Combine(
+                                       Server.MapPath("~/images/profile"), pic1);
+                string path2 = System.IO.Path.Combine(
+                                      Server.MapPath("~/images/profile"), pic2);
+                string path3 = System.IO.Path.Combine(
+                                      Server.MapPath("~/images/profile"), pic3);
+
+                // file is uploaded
+                //mobile.ImageFile.SaveAs(path);
+
+                // save the image path path to the database or you can send image 
+                // directly to database
+                // in-case if you want to store byte[] ie. for DB
+
+
+                //Passing parameters to query
+                SqlConnection connection1 = new SqlConnection(ConStr);
+                connection1.Open();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    mobile.ImageFileS.InputStream.CopyTo(ms);
+                    byte[] array1 = ms.GetBuffer();
+                    ViewBag.Image1 = array1;
+
+                    mobile.ImageFileF.InputStream.CopyTo(ms);
+                    byte[] array2 = ms.GetBuffer();
+                    ViewBag.Image2 = array2;
+
+                    mobile.ImageFileB.InputStream.CopyTo(ms);
+                    byte[] array3 = ms.GetBuffer();
+                    ViewBag.Image3 = array3;
+
+
+                    String query1 = "SELECT Id from Mobile where OS='" + operatingSystem + "' AND Color='" + color + "' AND Category='" + category + "' AND Dimensions='" + Dim + "' AND Weight='" + Weight + "' AND Display='" + dis + "' AND Memory='" + mem + "' AND RAM='" + ram + "' AND FrontCamerPx='" + front + "' AND BackCamerPx='" + back + "' AND Networks='" + Network + "' AND Price='" + price + "' AND Title='" + title + "'";
+                    cmd = new SqlCommand(query1, connection);
+                    rdr = cmd.ExecuteReader();
+                    int mobid = 0;
+                    
+                    while (rdr.Read())
+                    {
+                        mobid = Convert.ToInt32(rdr.GetValue(0));
+                    }
+                    rdr.Close();
+                    string query2 = "INSERT INTO Images(MobileId, SideViewImage,FrontViewImage,BackViewImage) VALUES ('" + mobid + "','" + array1 + "','" + array2 + "','" + array3 + "')";
+
+                    SqlCommand cmd2 = new SqlCommand(query2, connection1);
+                    cmd2.ExecuteNonQuery();
+                    connection1.Close();
+                }
+
+            }
             return View();
         }
         public ActionResult AddCategory()
@@ -150,6 +216,7 @@ namespace Mobile_Info.Controllers
             String query = "INSERT INTO Category(Title) VALUES('" + category.Title + "')";
             SqlCommand cmd = new SqlCommand(query, connection);
             cmd.ExecuteNonQuery();
+
             return View();
         }
     }

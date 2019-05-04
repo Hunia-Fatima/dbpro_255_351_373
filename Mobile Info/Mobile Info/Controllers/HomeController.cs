@@ -10,18 +10,20 @@ namespace Mobile_Info.Controllers
 {
     public class HomeController : Controller
     {
-        String ConStr = "Data Source=HN;Initial Catalog=DB20;Integrated Security=True";
+        String ConStr = "Data Source=DESKTOP-H2EOT5V\\SQLEXPRESS;Initial Catalog=DB20;Integrated Security=True";
 
         // GET: Home
         public ActionResult Index()
         {
             SqlConnection connection = new SqlConnection(ConStr);
-            connection.Open();
+             connection.Open();
             SqlConnection connection2 = new SqlConnection(ConStr);
             connection2.Open();
             String query = "SELECT * from Mobile";
             SqlCommand cmd = new SqlCommand(query, connection);
             SqlDataReader rdr = cmd.ExecuteReader();
+            int imgID = 0;
+            
             List<MobileViewModel> mobiles = new List<MobileViewModel>();
             while (rdr.Read())
             {
@@ -65,6 +67,7 @@ namespace Mobile_Info.Controllers
                     color = (rdr2.GetValue(1)).ToString();
                 }
                 rdr2.Close();
+                imgID = rdr.GetInt32(0);
                 mobile.Title = rdr.GetString(13);
                 mobile.Id = rdr.GetInt32(0);
                 mobile.Category = category;
@@ -88,6 +91,17 @@ namespace Mobile_Info.Controllers
                 mobile.Price = rdr.GetInt32(12);
                 mobiles.Add(mobile);
             }
+            query = "SELECT * FROM Images WHERE id = '" + imgID + "'";
+            cmd = new SqlCommand(query, connection2);
+            rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                byte[] image = rdr.GetSqlBytes(24).Value;
+                ViewBag.Image1 = "data:image/png;base64," + Convert.ToBase64String(image, 0, image.Length);
+                
+            }
+            rdr.Close();
+            
             ViewBag.mobiles = mobiles;
             return View();
         }
@@ -166,7 +180,18 @@ namespace Mobile_Info.Controllers
                 }
                 mobile.Price = rdr.GetInt32(12);
             }
+            int imgID = 0;
             ViewBag.mobileDetail = mobile;
+            query = "SELECT * FROM Images WHERE id = '" + imgID + "'";
+            cmd = new SqlCommand(query, connection2);
+            rdr = cmd.ExecuteReader();
+            while (rdr.Read())
+            {
+                byte[] image = rdr.GetSqlBytes(24).Value;
+                ViewBag.Image1 = "data:image/png;base64," + Convert.ToBase64String(image, 0, image.Length);
+
+            }
+            rdr.Close();
             return View();
         }
         public ActionResult AdminLogin()

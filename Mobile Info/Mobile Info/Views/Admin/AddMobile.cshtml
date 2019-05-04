@@ -1,5 +1,5 @@
 ﻿
-@{
+ @{
     ViewBag.Title = "AddMobile";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
@@ -74,9 +74,40 @@
                     new { @class = "form-control", required = "required" })
         </div>
         <div>
+            <label>Side View Image:</label>
+            @Html.LabelFor(model => model.ImageFileS)
+            @Html.TextBoxFor(model => model.ImageFileS, new { type = "file" })
+        </div>
+        <br />
+        <div>
+            <label>Front View Image:</label>
+            @Html.LabelFor(model => model.ImageFileF)
+            @Html.TextBoxFor(model => model.ImageFileF, new { type = "file" })
+        </div>
+        <br />
+        <div>
+            <label>Back View Image:</label>
+            @Html.LabelFor(model => model.ImageFileB)
+            @Html.TextBoxFor(model => model.ImageFileB, new { type = "file" })
+        </div>
+        <br />
+        <div>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
+    if (ViewBag.Image == null)
+    {
+
+    }
+    else
+    {
+        var base64 = Convert.ToBase64String(ViewBag.Image);
+        var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+
+        <img src="@imgSrc" />
+    }
+
+}
                 }
 

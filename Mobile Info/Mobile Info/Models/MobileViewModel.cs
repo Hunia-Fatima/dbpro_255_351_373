@@ -21,6 +21,12 @@ namespace Mobile_Info.Models
         public int BackCameraPx { get; set; }
         public int Price { get; set; }
         public String Networks { get; set; }
+        public string ImagePathS { get; set; }
+        public HttpPostedFileBase ImageFileS { get; set; }
+        public string ImagePathF { get; set; }
+        public HttpPostedFileBase ImageFileF { get; set; }
+        public string ImagePathB { get; set; }
+        public HttpPostedFileBase ImageFileB { get; set; }
     }
 
 }
